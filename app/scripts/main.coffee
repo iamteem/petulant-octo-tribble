@@ -24,10 +24,16 @@ setup = ->
   bPaper = setupTimeline "b-timestream", bColors
 
   # streams
-  aClick = $('#button-a').asEventStream('click')
-  bClick = $('#button-b').asEventStream('click')
+  aClicks = $('#button-a').asEventStream('click')
+  bClicks = $('#button-b').asEventStream('click')
+  keydowns = $(document).asEventStream('keydown')
+  keycodeIs = (code) -> ((event) -> event.which is code)
+  aPresses = keydowns.filter(keycodeIs(65))
+  bPresses = keydowns.filter(keycodeIs(66))
+  aInputs = aClicks.merge(aPresses)
+  bInputs = bClicks.merge(bPresses)
 
   # side effects
-  aClick.map(["A", aPaper, aColors]).onValues(addBubble)
-  bClick.map(["B", bPaper, bColors]).onValues(addBubble)
+  aInputs.map(["A", aPaper, aColors]).onValues(addBubble)
+  bInputs.map(["B", bPaper, bColors]).onValues(addBubble)
 $(setup)
